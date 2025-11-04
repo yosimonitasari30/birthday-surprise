@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surprise for Vimalasena 🎁</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+    overflow: hidden;
+    text-align: center;
+    padding: 0;
+    color: #1e3a8a;
+  }
+
+  .balloon-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .balloon {
+    position: absolute;
+    bottom: -200px;
+    width: 65px;
+    height: 90px;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: float 7s ease-in-out infinite;
+    box-shadow: inset -4px -8px rgba(0,0,0,0.1);
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(-1200px) translateX(10px); }
+  }
+
+  .page {
+    display: none;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-size: 37px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .active { display: flex; }
+
+  button {
+    background-color: #60a5fa;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    margin-top: 20px;
+    font-size: 14px;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px #1e3a8a;
+    transition: 0.2s;
+    z-index: 2;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  button:hover { background-color: #3b82f6; transform: translateY(-2px); }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    grid-gap: 8px;
+  }
+
+.title {
+  font-size: 18px;
+  margin-bottom: 25px; /* 👉 memberi jarak antara judul dan kotak permainan */
+  color: #1e3a8a;
+}
+
+  .cell {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    cursor: pointer;
+    color: #1e3a8a;
+  }
+
+  .heart {
+    color: #60a5fa;
+    font-size: 22px;
+  }
+
+  /* Tombol sejajar */
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .options button {
+    width: 150px;
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .playlist-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;          /* beri jarak sedikit antar elemen */
+  margin-top: -10px;  /* naikkan seluruh blok playlist */
+  }
+
+/* Judul halaman playlist */
+#page5Title {
+  margin-bottom: 15px; /* beri jarak lebih bawah */
+}
+
+/* 🎵 Styling khusus saat tampilan playlist aktif */
+#playlistTitle {
+  margin-top: 40px;      /* beri jarak dari atas */
+  margin-bottom: 15px;   /* beri jarak ke daftar lagu */
+}
+
+#playlistContainer {
+  margin-top: 10px;       /* jarak kecil antara judul dan list */
+}
+
+#playlistContainer .song-item {
+  margin-bottom: 8px;    /* beri sedikit spasi antar lagu */
+}
+
+#playlistContainer + .back-btn {
+  margin-top: 25px;      /* jarak antara daftar lagu dan tombol back */
+}
+  .song-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    color: #1e3a8a;
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 260px;
+    justify-content: space-between;
+  }
+
+  .song-item span {
+    font-size: 10px;
+    text-align: left;
+  }
+
+  .play-btn {
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 38px;        /* sedikit lebih besar agar proporsional */
+  height: 38px;
+  font-size: 16px;    /* biar segitiga pas di tengah */
+  cursor: pointer;
+  box-shadow: 0 3px #1e3a8a;
+  display: flex;       /* agar segitiga benar-benar di tengah */
+  align-items: center;
+  justify-content: center;
+}
+
+  .play-btn:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+}
+
+  audio { display: none; }
+/* --- Perbaikan posisi tombol Back dan Play agar proporsional --- */
+
+/* Tombol Back berbentuk lingkaran rapi dan teks di tengah */
+.back-btn {
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px #1e3a8a;
+  transition: 0.2s;
+  margin-top: 20px;
+}
+
+.back-btn:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+}
+
+/* Tombol play — segitiga putih di tengah lingkaran */
+.play-btn {
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px #1e3a8a;
+  transition: 0.2s;
+}
+
+.play-btn:hover {
+  background: #3b82f6;
+  transform: scale(1.05);
+}
+
+/* Tambahan CSS untuk popup message */
+.message-box {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.message-box p {
+  text-align: left;          /* ubah jadi rata kiri */
+  margin-bottom: 12px;       /* jarak antar paragraf */
+  line-height: 1.8;          /* jarak antar baris */
+  word-spacing: 1px;         /* sedikit ruang antar kata */
+  white-space: normal;      /* biar teks patah alami */
+}
+
+.message-content {
+  background: #ffffff;
+  color: #1e3a8a;
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  font-size: 12px;
+  line-height: 1.6;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.message-box button {
+  margin-top: 20px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #60a5fa;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px #1e3a8a;
+  transition: 0.2s;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+}
+
+.message-box button:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+}
+
+/* 📸 Galeri Moment */
+.moment-gallery {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.moment-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.moment-photo:hover {
+  transform: scale(1.05);
+}
+
+/* 📸 Pop-up Foto */
+.photo-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.photo-popup img {
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.photo-popup button {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 3px #1e3a8a;
+/* ✨ supaya X-nya pas di tengah lingkaran */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🎥 Gift Popup */
+.gift-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.gift-content {
+  position: relative;
+  background: white;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.gift-content video {
+  max-width: 80vw;
+  max-height: 80vh;
+  border-radius: 10px;
+}
+
+.gift-popup button {
+  position: absolute;
+  top: 2px;
+  right: 20px;
+  background: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 3px #1e3a8a;
+  display: flex;              /*⬅️ menampilkan flexbox */
+  align-items: center;        /* ⬅️ posisi vertikal tengah */
+  justify-content: center;    /* ⬅️ posisi horizontal tengah */
+  transition: 0.2s ease;      /* efek hover halus */
+}
+
+
+.gift-popup button:hover {
+  background: #3b82f6;
+  transform: scale(1.1);
+}
+
+#page6 h2 {
+  line-height: 1.2;        /* jarak antar baris */
+  margin-bottom: 15px;     /* jarak ke paragraf di bawah */
+}
+
+.love-line {
+  display: block;
+  margin-top: 2px;        /* sedikit jarak antara kalimat atas dan bawah */
+}
+
+</style>
+</head>
+<body>
+
+<div class="balloon-container" id="balloonContainer"></div>
+
+<audio id="bgMusic" loop>
+  <source src="bergema-selamanya-instrumental.mp3" type="audio/mp3">
+</audio>
+
+<!-- 🌸 PAGE 1 -->
+<div class="page active" id="page1">
+  <h1>Welcome<br><span class="heart">💙 Vimalasena 💙</span></h1>
+  <button onclick="startGame()">START</button>
+</div>
+
+<!-- 🎮 PAGE 2 -->
+<div class="page" id="page2">
+  <div class="title">Let's Play Tic Tac Toe 💙</div>
+  <div class="board" id="board"></div>
+</div>
+
+<!-- 🏆 PAGE 3 -->
+<div class="page" id="page3">
+  <h2>Congrats, You Won! 🎉</h2>
+  <button onclick="showPage(4)">Next</button>
+</div>
+
+<!-- 🎂 PAGE 4 -->
+<div class="page" id="page4">
+  <h1>Happy Birthday,<br>Sukha Vaddhana 💙</h1>
+  <p>May your heart always bloom like morning light,<br>
+  your laughter echo softly through time,<br>
+  and every step you take be wrapped in warmth and calm.<br><br>
+  You are loved beyond words — today and always 💙</p>
+  <button onclick="showPage(5)">Next</button>
+</div>
+
+<!-- 🎁 PAGE 5 -->
+<div class="page" id="page5">
+  <h2 id="page5Title">Choose Your Surprise 💙</h2>
+
+  <div class="options">
+    <button onclick="toggleMoment()">Moment 📸</button>
+    <button onclick="showGift()">Gift 🎁</button>
+    <button onclick="togglePlaylist()">Playlist 🎵</button>
+    <button onclick="showMessages()">Message 💌</button>
+  </div>
+
+  <div class="playlist-container" id="playlistContainer">
+    <div class="song-item"><span>🎵 Bergema Sampai Selamanya</span><button class="play-btn" onclick="playSong('bergema_sampai_selamanya.mp3', this)">▶</button></div>
+    <div class="song-item"><span>🎵 Terima Kasih, Masih Disini</span><button class="play-btn" onclick="playSong('terima_kasih_masih_disini.mp3', this)">▶</button></div>
+    <div class="song-item"><span>🎵 Like We Just Met</span><button class="play-btn" onclick="playSong('like_we_just_met.mp3', this)">▶</button></div>
+    <div class="song-item"><span>🎵 Lucky to Have You - Liu Jie</span><button class="play-btn" onclick="playSong('lucky_to_have_you.mp3', this)">▶</button></div>
+    <div class="song-item"><span>🎵 Anugerah Terindah</span><button class="play-btn" onclick="playSong('anugerah_terindah.mp3', this)">▶</button></div>
+  </div>
+
+<div class="moment-gallery" id="momentGallery">
+  <!-- Ganti foto sesuai kebutuhan -->
+  <img src="moment1.jpeg" alt="Moment 1" class="moment-photo" onclick="openPhoto('moment1.jpeg')">
+  <img src="moment2.jpeg" alt="Moment 2" class="moment-photo" onclick="openPhoto('moment2.jpeg')">
+  <img src="moment3.jpeg" alt="Moment 3" class="moment-photo" onclick="openPhoto('moment3.jpeg')">
+  <img src="moment4.jpeg" alt="Moment 4" class="moment-photo" onclick="openPhoto('moment4.jpeg')">
+  <img src="moment5.jpeg" alt="Moment 5" class="moment-photo" onclick="openPhoto('moment5.jpeg')">
+  <img src="moment6.jpeg" alt="Moment 6" class="moment-photo" onclick="openPhoto('moment6.jpeg')">
+  <img src="moment7.jpeg" alt="Moment 7" class="moment-photo" onclick="openPhoto('moment7.jpeg')">
+  <img src="moment8.jpeg" alt="Moment 8" class="moment-photo" onclick="openPhoto('moment8.jpeg')">
+  <img src="moment9.jpeg" alt="Moment 9" class="moment-photo" onclick="openPhoto('moment9.jpeg')">
+  <img src="moment10.jpeg" alt="Moment 10" class="moment-photo" onclick="openPhoto('moment10.jpeg')">
+  <img src="moment11.jpeg" alt="Moment 11" class="moment-photo" onclick="openPhoto('moment11.jpeg')">
+  <img src="moment12.jpeg" alt="Moment 12" class="moment-photo" onclick="openPhoto('moment12.jpeg')">
+  <img src="moment13.jpeg" alt="Moment 13" class="moment-photo" onclick="openPhoto('moment13.jpeg')">
+  <img src="moment14.jpeg" alt="Moment 14" class="moment-photo" onclick="openPhoto('moment14.jpeg')">
+  <img src="moment15.jpeg" alt="Moment 15" class="moment-photo" onclick="openPhoto('moment15.jpeg')">
+  <img src="moment16.jpeg" alt="Moment 16" class="moment-photo" onclick="openPhoto('moment16.jpeg')">
+  <img src="moment17.jpeg" alt="Moment 17" class="moment-photo" onclick="openPhoto('moment17.jpeg')">
+  <img src="moment18.jpeg" alt="Moment 18" class="moment-photo" onclick="openPhoto('moment18.jpeg')">
+  <img src="moment19.jpeg" alt="Moment 19" class="moment-photo" onclick="openPhoto('moment19.jpeg')">
+  <img src="moment20.jpeg" alt="Moment 20" class="moment-photo" onclick="openPhoto('moment20.jpeg')">
+  <img src="moment21.jpeg" alt="Moment 21" class="moment-photo" onclick="openPhoto('moment21.jpeg')">
+  <img src="moment22.jpeg" alt="Moment 22" class="moment-photo" onclick="openPhoto('moment22.jpeg')">
+  <img src="moment23.jpeg" alt="Moment 23" class="moment-photo" onclick="openPhoto('moment23.jpeg')">
+  <img src="moment24.jpeg" alt="Moment 24" class="moment-photo" onclick="openPhoto('moment24.jpeg')">
+  <img src="moment25.jpeg" alt="Moment 25" class="moment-photo" onclick="openPhoto('moment25.jpeg')">
+  <img src="moment26.jpeg" alt="Moment 26" class="moment-photo" onclick="openPhoto('moment26.jpeg')">
+  <img src="moment27.jpeg" alt="Moment 27" class="moment-photo" onclick="openPhoto('moment27.jpeg')">
+  <img src="moment28.jpeg" alt="Moment 28" class="moment-photo" onclick="openPhoto('moment28.jpeg')">
+  <img src="moment29.jpeg" alt="Moment 29" class="moment-photo" onclick="openPhoto('moment29.jpeg')">
+  <img src="moment30.jpeg" alt="Moment 30" class="moment-photo" onclick="openPhoto('moment30.jpeg')">
+  <img src="moment31.jpeg" alt="Moment 31" class="moment-photo" onclick="openPhoto('moment31.jpeg')">
+  <img src="moment32.jpeg" alt="Moment 32" class="moment-photo" onclick="openPhoto('moment32.jpeg')">
+  <img src="moment33.jpeg" alt="Moment 33" class="moment-photo" onclick="openPhoto('moment33.jpeg')">
+  <img src="moment34.jpeg" alt="Moment 34" class="moment-photo" onclick="openPhoto('moment34.jpeg')">
+  <img src="moment35.jpeg" alt="Moment 35" class="moment-photo" onclick="openPhoto('moment35.jpeg')">
+</div>
+
+  <audio id="player"></audio>
+  <button id="nextPage5" onclick="showPage(6)">Next</button>
+</div>
+
+
+
+<!-- 🌅 PAGE 6 -->
+<div class="page" id="page6">
+  <h2>
+  This little surprise may end here,<br><br>
+  <span class="love-line">but my love remains - constant and true 💙</span>
+  </h2>
+  <p>May every sunrise remind you of how cherished you are.</p>
+  <button onclick="restart()">Back to Start</button>
+</div>
+
+<!-- 💌 Message Popup -->
+<div class="message-box" id="messageBox">
+  <div class="message-content" id="messageContent"></div>
+  <button onclick="closeMessage()">Close</button>
+</div>
+
+<!-- 📸 Photo Popup -->
+<div class="photo-popup" id="photoPopup">
+  <img id="popupImage" src="" alt="Moment">
+  <button onclick="closePhoto()">✕</button>
+</div>
+
+<!-- 🎥 Gift Popup -->
+<div class="gift-popup" id="giftPopup">
+  <div class="gift-content">
+    <video id="giftVideo" controls>
+      <source src="gift-video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button onclick="closeGift()">✕</button>
+  </div>
+</div>
+
+<script>
+  const music = document.getElementById("bgMusic");
+
+ // 🧭 Fungsi untuk berpindah halaman
+  function showPage(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+
+// 🔇 Cegah musik restart saat kembali ke halaman awal
+    if (n === 1) {
+      music.pause();
+      music.currentTime = 0;
+    }
+  }
+
+  function startGame() {
+    showPage(2);
+    music.play();
+    createBoard();
+  }
+
+  function restart() { 
+    showPage(1); 
+  }
+
+  const balloonContainer = document.getElementById("balloonContainer");
+  const pastelColors = ['#fbcfe8','#fde68a','#bfdbfe','#c7d2fe','#bbf7d0','#ffd6a5','#d5f0f7'];
+  for (let i = 0; i < 30; i++) {
+    const balloon = document.createElement('div');
+    balloon.classList.add('balloon');
+    balloon.style.left = Math.random()*100+'vw';
+    balloon.style.background = pastelColors[Math.floor(Math.random()*pastelColors.length)];
+    balloon.style.animationDelay = Math.random()*10+'s';
+    balloonContainer.appendChild(balloon);
+  }
+
+  const board = document.getElementById('board');
+  let cells = [];
+  let turn = 'X';
+  function createBoard() {
+    board.innerHTML = '';
+    cells = [];
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.addEventListener('click', () => handleMove(i));
+      board.appendChild(cell);
+      cells.push(cell);
+    }
+  }
+
+  function handleMove(i) {
+    if (cells[i].textContent) return;
+    cells[i].textContent = turn;
+    if (checkWin()) setTimeout(()=>showPage(3),600);
+    else turn = turn==='X'?'O':'X';
+  }
+
+  function checkWin() {
+    const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(([a,b,c])=>cells[a].textContent&&cells[a].textContent===cells[b].textContent&&cells[a].textContent===cells[c].textContent);
+  }
+
+  // Playlist
+const playlist = document.getElementById("playlistContainer");
+const options = document.querySelector(".options");
+const player = document.getElementById("player");
+
+// 🎵 Variabel kontrol musik latar
+let musicPausedAt = 0;   // waktu terakhir musik dijeda
+let musicWasPlaying = false;  // status apakah sebelumnya musik sedang main
+
+function togglePlaylist() {
+  // 🎵 Hentikan sementara musik latar (kalau sedang main)
+  if (music && !music.paused && music.readyState > 0 && music.currentTime > 0) {
+    musicPausedAt = music.currentTime;
+    music.pause();
+    musicWasPlaying = true;
+    console.log("🎵 Backsound dijeda di detik", musicPausedAt.toFixed(2));
+  } else {
+    musicWasPlaying = false;
+  }
+
+  // Sembunyikan tombol utama dan tampilkan playlist
+  options.style.display = "none";
+  playlist.style.display = "flex";
+
+  // Ubah judul
+  const title = document.getElementById("page5Title");
+  if (title) title.textContent = "Choose Your Favourite Playlist 🎵";
+
+  // Ubah tombol Next jadi Back
+  const nextBtn = document.getElementById("nextPage5");
+  if (nextBtn) {
+    nextBtn.textContent = "Back";
+    nextBtn.onclick = () => {
+      // 🎵 Stop musik playlist yang sedang diputar
+      if (!player.paused) {
+        player.pause();
+        player.currentTime = 0;
+      }
+
+      // Sembunyikan playlist dan tampilkan tombol utama
+      playlist.style.display = "none";
+      options.style.display = "flex";
+
+      // Ubah kembali judul
+      if (title) title.textContent = "Choose Your Surprise 💙";
+
+      // Ubah tombol kembali jadi "Next"
+      nextBtn.textContent = "Next";
+      nextBtn.onclick = () => showPage(6);
+
+      if (musicWasPlaying) {
+        console.log("▶️ Melanjutkan backsound dari detik", musicPausedAt.toFixed(2));
+        music.currentTime = musicPausedAt;
+        music.play();
+      }
+    };
+  }
+}
+
+// 🎧 Fungsi playSong — memastikan hanya satu musik aktif
+function playSong(src, button) {
+  // Hentikan musik latar agar tidak tumpang tindih
+  if (music && !music.paused) {
+    music.pause();
+  }
+
+  // Jika lagu yang sama sedang dimainkan → toggle pause/play
+  if (player.src.includes(src) && !player.paused) {
+    player.pause();
+    button.textContent = "▶"; // ubah tombol jadi play
+  } else {
+    // Jika lagu baru atau tidak sedang main → putar lagu itu
+    player.src = src;
+    player.play();
+
+    // Reset semua tombol jadi ▶
+    document.querySelectorAll(".play-btn").forEach(btn => (btn.textContent = "▶"));
+    // Ubah tombol yang diklik jadi ⏸️
+    button.textContent = "⏸️";
+  }
+
+  // Saat lagu berhenti (selesai diputar), ubah tombol kembali ke ▶
+  player.onended = () => {
+    button.textContent = "▶";
+  };
+}
+
+// 💌 Pesan Ulang Tahun (bisa kamu ubah sesuka hati)
+const messages = [`
+  <p>
+    🌷 Di bawah langit biru yang tenang,<br>
+    aku kirimkan harapan yang tak pernah padam.<br>
+    Semoga langkahmu selalu dipayungi kebahagiaan,<br>
+    dan setiap senyum yang lahir darimu,<br>
+    menjadi alasan aku dan dunia ikut tersenyum pula.
+  </p>
+
+  <p>
+    Hari ini bukan hanya tentang bertambahnya usia,<br>
+    tapi tentang semua kebaikan yang tumbuh bersamamu.
+  </p>
+
+  <p>💙 Selamat ulang tahun, Sukha Vaddhana 💙</p>
+
+  <p>
+    Terima kasih telah menjadi cahaya yang lembut,<br>
+    dan alasan kecil mengapa hari-hariku terasa indah.
+  </p>
+`];
+
+function showMessages() {
+  const box = document.getElementById("messageBox");
+  const content = document.getElementById("messageContent");
+
+  // Gabungkan pesan jadi satu paragraf
+  content.innerHTML = messages.map(m => `<p>${m}</p>`).join("");
+  box.style.display = "flex";
+}
+
+function closeMessage() {
+  document.getElementById("messageBox").style.display = "none";
+}
+
+// 📸 Fungsi Moment
+const momentGallery = document.getElementById("momentGallery");
+
+function toggleMoment() {
+  const options = document.querySelector(".options");
+  const playlist = document.getElementById("playlistContainer");
+  const momentGallery = document.getElementById("momentGallery");
+
+  // Sembunyikan tombol utama dan tampilkan galeri foto
+  options.style.display = "none";
+  playlist.style.display = "none";
+  momentGallery.style.display = "flex";
+
+// Ubah judul jadi "Choose Your Favourite Moment 📸"
+const title = document.getElementById("page5Title");
+if (title) title.textContent = "Choose Your Favourite Moment 📸";
+
+  // Ganti tombol "Next" di halaman 5 jadi "Back" saat Moment aktif
+  const nextBtn = document.querySelector("#page5 button[onclick='showPage(6)']");
+  if (nextBtn) {
+    nextBtn.textContent = "Back";
+    nextBtn.onclick = () => {
+      // Tutup galeri foto dan tampilkan kembali tombol utama
+      momentGallery.style.display = "none";
+      options.style.display = "flex";
+
+  // Kembalikan judul ke semula
+      if (title) title.textContent = "Choose Your Surprise 💙";
+
+      // Setelah kembali, ubah lagi tombolnya jadi "Next"
+      nextBtn.textContent = "Next";
+      nextBtn.onclick = () => showPage(6);
+    };
+  }
+}
+
+function openPhoto(src) {
+  const popup = document.getElementById("photoPopup");
+  const img = document.getElementById("popupImage");
+  img.src = src;
+  popup.style.display = "flex";
+}
+
+function closePhoto() {
+  document.getElementById("photoPopup").style.display = "none";
+}
+
+// 🎥 Gift Video Popup
+function showGift() {
+  const giftPopup = document.getElementById("giftPopup");
+  const giftVideo = document.getElementById("giftVideo");
+
+  // 🎵 Hentikan backsound sementara (jika sedang main)
+  if (music && !music.paused && music.currentTime > 0) {
+    musicPausedAt = music.currentTime;
+    music.pause();
+    musicWasPlaying = true;
+    console.log("🎵 Backsound dijeda di detik", musicPausedAt.toFixed(2));
+  } else {
+    musicWasPlaying = false;
+  }
+
+  // 🎥 Tampilkan popup dan putar video
+  giftPopup.style.display = "flex";
+  giftVideo.play();
+}
+
+function closeGift() {
+  const giftPopup = document.getElementById("giftPopup");
+  const giftVideo = document.getElementById("giftVideo");
+
+  // 🎥 Hentikan video dan tutup popup
+  giftVideo.pause();
+  giftVideo.currentTime = 0;
+  giftPopup.style.display = "none";
+
+  // 🎵 Lanjutkan backsound dari posisi terakhir (kalau sebelumnya main)
+  if (musicWasPlaying) {
+    console.log("▶️ Melanjutkan backsound dari detik", musicPausedAt.toFixed(2));
+    music.currentTime = musicPausedAt;
+    music.play();
+  }
+}
+
+</script>
+</body>
+</html>
